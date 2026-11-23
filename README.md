@@ -1,122 +1,92 @@
-# Modern Physics Experiment Report — skill
+# 近代物理实验报告模板 Skill
 
-A reusable template for Chinese modern-physics experiment reports (近代物理实验报告), packaged
-as an agent skill. It carries a fixed visual layout — A4, 五号宋体正文, 1.5 倍行距, 黑体标题,
-图题/表题规范, `MODERN PHYSICS EXPERIMENT II` 页眉 — plus a working LaTeX pipeline and four
-complete reports that were produced with it.
+一套固定版式的近代物理实验报告模板，配可直接编译的 LaTeX 骨架、可复用的图元片段，以及四份按此模板完成的完整报告。
 
-The point of the skill is consistency: every report built from it looks like the same
-document, so a reader (or a grader) sees the physics rather than the formatting.
+所有由它生成的报告版面一致：A4、正文五号宋体、1.5 倍行距、黑体标题、图题表题规范、`MODERN PHYSICS EXPERIMENT II` 页眉。读者看到的是内容，不是排版的差异。
 
-## What's inside
+## 目录结构
 
 ```
 .
-├── SKILL.md                          entry point: workflow, LaTeX pipeline, fidelity rules
-├── artifact-template.json            template descriptor (reference + preview)
-├── agents/openai.yaml                agent metadata
+├── SKILL.md                          skill 入口：工作流、LaTeX 路线、保真规则
+├── artifact-template.json            模板描述（参考件与预览图索引）
+├── agents/openai.yaml                agent 元数据
 ├── assets/
-│   ├── preview.png                   rendered preview of the reference layout
-│   ├── reference.docx                the retained Word reference
+│   ├── preview.png                   模板版式规格图
+│   ├── reference.docx                保留的 Word 参考件
 │   └── latex/
-│       ├── report-template.tex       compilable skeleton — copy and fill in
-│       └── figure-snippets.tex       eight reusable figure patterns
+│       ├── report-template.tex       可编译骨架，复制后填内容
+│       └── figure-snippets.tex       八类可复用图元
 ├── references/
-│   ├── report-workflow.md            source handling, structure, analysis, verification
-│   ├── latex-layout-spec.md          exact parameters, build commands, error/fix table
-│   └── worked-examples.md            the four finished reports, as case files
+│   ├── report-workflow.md            来源处理、结构、分析、验收
+│   ├── latex-layout-spec.md          版式参数、编译命令、踩坑对照表
+│   └── worked-examples.md            四份报告的案例档案
 └── scripts/
-    └── check.ps1                     compile both .tex files and scan the logs
+    └── check.ps1                     编译两份 tex 并扫描日志
 ```
 
-## The four worked examples
+## 四份示例报告
 
-| Report | Pages | Source it started from | What it demonstrates |
+| 报告 | 页数 | 原始素材 | 示范了什么 |
 | --- | --- | --- | --- |
-| 9.9 锁相放大器 (lock-in amplifier) | 22 | Word doc, 35 images | full derivation chain, appendix data tables, English abstract |
-| 4.5 电光调制器特性的测试 (electro-optic modulator) | 15 | Word doc, 35 mostly broken figures | redrawing every schematic in TikZ, keeping only real photographs |
-| 电子自旋共振 (electron spin resonance) | 16 | 19-page 12 pt PDF + `.tex` | converting a long report to the template, stripping production notes |
-| 荧光光谱 (fluorescence) | 11 | 19-page PDF, 5.2 MB | image recompression, multi-task structure, honest figure labelling |
+| 9.9 锁相放大器 | 22 | Word 文档，35 张图 | 完整推导链、附录数据表、英文摘要 |
+| 4.5 电光调制器特性的测试 | 15 | Word 文档，35 张多为残缺的图 | 全部原理图改用 TikZ 重画，只保留实拍照片 |
+| 电子自旋共振 | 16 | 19 页 12 pt PDF 与 `.tex` | 长文档迁入模板、清除制作说明 |
+| 荧光光谱 | 11 | 19 页 PDF，5.2 MB | 图片重压缩、多任务结构、图注如实标注 |
 
-`references/worked-examples.md` records, for each one, the source form, the structural
-decisions, the figure strategy, the measured data, what broke, and how it was verified.
+每份报告的素材形态、结构决策、图策略、实测数据、出错点与验收方式，记录在 `references/worked-examples.md`。
 
-## Requirements
+## 环境要求
 
-- **TeX**: XeLaTeX with `ctex`, `tikz`, `pgfplots`, `booktabs`, `caption`, `titlesec`,
-  `fancyhdr`, `siunitx`, `needspace`. A TinyTeX installation is enough — `tlmgr install`
-  the missing packages once.
-- **Fonts**: SimSun (宋体), SimHei (黑体), KaiTi (楷体) and Times New Roman. On Windows
-  these are present by default; on macOS/Linux substitute system CJK fonts and keep the
-  bold face mapping (`BoldFont=SimHei`) or headings will silently lose weight.
-- **Optional**: LibreOffice (or any PDF rasteriser) for the render-and-inspect step. The
-  skill assumes you look at page images, not just the log.
+- **TeX**：XeLaTeX，需要 `ctex`、`tikz`、`pgfplots`、`booktabs`、`caption`、`titlesec`、`fancyhdr`、`siunitx`、`needspace`。TinyTeX 足够，缺包用 `tlmgr install` 补。
+- **字体**：SimSun（宋体）、SimHei（黑体）、KaiTi（楷体）、Times New Roman。Windows 自带；macOS/Linux 需替换为系统中文字体，并保留粗体映射 `BoldFont=SimHei`，否则标题会静默掉粗。
+- **可选**：LibreOffice 或其他 PDF 光栅化工具，用于把成品渲染成图逐页检查。
 
-## Use
+## 安装与使用
 
-1. Copy this directory into your skills folder, e.g. `~/.codex/skills/` (Windows:
-   `C:\Users\<you>\.codex\skills\`).
-2. Ask for a report and name the skill, or let the description trigger it.
-3. For a LaTeX report, copy `assets/latex/report-template.tex` into a project folder, put
-   the images in `figs/`, and fill in the sections.
+1. 把本目录复制到 skills 目录，例如 `~/.codex/skills/`（Windows：`C:\Users\<你>\.codex\skills\`）。
+2. 新建实验报告时点名该 skill，或由描述自动触发。
+3. LaTeX 路线：复制 `assets/latex/report-template.tex` 到工程目录，图片放进 `figs/`，按小节填入内容。
 
-To check the template itself:
+检查模板本身：
 
 ```powershell
 pwsh -File scripts/check.ps1
 ```
 
-It compiles `report-template.tex` and `figure-snippets.tex` in a temporary folder and fails
-if the log contains an error, an overfull box, or an undefined reference.
+脚本在临时目录编译 `report-template.tex` 与 `figure-snippets.tex`，日志里出现错误、Overfull Box 或未定义引用即判失败。
 
-## Design notes
+编译与渲染的具体命令、验收标准见 `references/latex-layout-spec.md` 第 2 节。
 
-- The layout parameters are deliberately hard-coded in one place. If you need a different
-  page size or font size, change it in the preamble once — do not patch individual figures.
-- `assets/preview.png` is the annotated template sheet the reports were measured against.
-  The template follows the four finished reports, which use a slightly larger title/author
-  scale and the `II` header. The five differences are listed in
-  `references/latex-layout-spec.md` §1, with the exact lines to change if you prefer to match
-  the sheet instead.
-- Schematics are redrawn in TikZ; photographs are never redrawn. A redrawn screenshot stops
-  being evidence.
-- Figures whose "data points" are photographs (a matrix of oscilloscope captures) are laid
-  out as a coordinate system, not as a table with images in cells.
-- A curve is only called a fit when it comes from a physical model. Joining measured points
-  is labelled as a smooth join.
-- Text that talks about the report instead of the physics — production notes, hedging,
-  "the source does not say" — is removed, not softened.
+## 设计约定
 
-## Adding your own report
+- 版式参数只写在导言区一处。要改纸张或字号，改导言区，不要逐个图去补丁。
+- 原理图用 TikZ 重画，实拍照片一律保留。重画过的截图不再是证据。
+- 以照片为“数据点”的图表（如“波片位置 × 偏压”）排成坐标系，不排成把图片塞进单元格的表格。
+- 只有来自物理模型的曲线才叫拟合；连接实测点的曲线标注为平滑连线。
+- 讲报告本身而不讲物理的句子（制作说明、自我设限、“资料中没有给出”一类）一律删除，不做软化处理。
 
-If you produce another report with this template, add a short case file under
-`references/` following the structure of `worked-examples.md`: source form, structural
-decisions, figure strategy, data, failures, verification. That is what makes the skill
-useful after the first reading.
+`assets/preview.png` 是版式规格图，四份报告在标题、作者、摘要、页眉四处采用了略大的字号阶梯，与规格图的差异及需改动的行号列在 `references/latex-layout-spec.md` 第 1 节末。
 
-## Publishing to GitHub
+## 推送到 GitHub
 
-This directory is already in repository shape. After `git init` and the first commit:
+本目录已是仓库结构。执行：
 
 ```bash
 git init
 git add .
 git commit -m "Initial commit: modern physics experiment report skill"
 git branch -M main
-git remote add origin https://github.com/<you>/artifact-template-modern-physics-experiment-report.git
+git remote add origin https://github.com/<你的账号>/artifact-template-modern-physics-experiment-report.git
 git push -u origin main
 ```
 
-The repository is about 4.9 MB, dominated by `assets/reference.docx` (4.4 MB). That is well
-inside GitHub's per-file limit, but if you prefer a lean repository you can drop the docx
-and keep only `preview.png` plus the LaTeX assets — the LaTeX route does not read it.
+仓库约 4.9 MB，其中 `assets/reference.docx` 占 4.4 MB。LaTeX 路线不读取该文件，删掉它可把仓库压到 0.5 MB 以内。
 
-## License
+## 许可
 
-MIT — see `LICENSE`. Replace the copyright holder line before publishing if you fork it.
+MIT，见 `LICENSE`。发布前替换其中的版权人占位。
 
-## Note on the reference files
+## 参考文件
 
-`assets/reference.docx`, `assets/preview.png` and `artifact-template.json` are the retained
-visual reference for the template. `SKILL.md` instructs agents not to modify them; keep them
-in the repository so the Word route stays reproducible.
+`assets/reference.docx`、`assets/preview.png`、`artifact-template.json` 是模板的视觉参考件，`SKILL.md` 禁止修改它们。保留在仓库中是为了让 Word 路线同样可复现。
