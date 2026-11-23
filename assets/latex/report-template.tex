@@ -1,0 +1,196 @@
+% !TEX program = xelatex
+% =============================================================================
+%  近代物理实验报告 —— LaTeX 骨架模板
+%
+%  用法：把本文件复制成报告工程的 main.tex，替换标题块与各节正文，
+%        图放在 figs/ 下，用 xelatex 连续编译两次。
+%
+%  编译： xelatex -interaction=nonstopmode main.tex   （跑 2 次）
+%  检查： 编译日志中不应出现 "^!"、Overfull \hbox、Reference ... undefined
+%
+%  版式依据《近代物理实验报告论文模板及说明》，细目见
+%  references/latex-layout-spec.md；本文件编译后即是一份可直接对照的样张。
+% =============================================================================
+\documentclass[UTF8,zihao=5,a4paper]{ctexart}
+
+% ----------------------------- 页面 -----------------------------
+\usepackage[left=2.0cm,right=2.0cm,top=2.2cm,bottom=2.2cm]{geometry}
+
+% ----------------------------- 宏包 -----------------------------
+\usepackage{amsmath,amssymb,bm}
+\usepackage{siunitx}
+\usepackage{graphicx,booktabs,array,tabularx,multirow}
+\usepackage{tikz,pgfplots}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage{fancyhdr,titlesec,enumitem,caption,float,indentfirst,needspace}
+\pgfplotsset{compat=1.18}
+
+% ------------------------- 行距与段距 ---------------------------
+\linespread{1.5}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0pt}
+\setlength{\headheight}{15pt}
+\setlength{\emergencystretch}{2em}
+
+% ----------------------------- 字体 -----------------------------
+% ctexart 已内置 \heiti \songti \fangsong \kaishu，不要再 \newCJKfontfamily，
+% 否则报 "Control sequence \heiti is already defined"。
+\setCJKmainfont{SimSun}[BoldFont=SimHei,ItalicFont=KaiTi]
+\setmainfont{Times New Roman}
+
+% --------------------------- 页眉页脚 ---------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\zihao{-5}\itshape MODERN PHYSICS EXPERIMENT II}
+\fancyfoot[C]{\zihao{-5}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ----------------------------- 标题 -----------------------------
+% 一级：小四黑体；二级：五号黑体。不要在 \heiti 后再加 \bfseries
+% （SimHei 无粗体，会报 "Font shape ... undefined"）。
+\titleformat{\section}{\zihao{-4}\heiti}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\zihao{5}\heiti}{\thesubsection}{0.8em}{}
+\titlespacing*{\section}{0pt}{2.2ex plus .4ex minus .2ex}{1.2ex plus .2ex}
+\titlespacing*{\subsection}{0pt}{1.6ex plus .3ex minus .2ex}{0.9ex plus .2ex}
+% 思考题小问用 \paragraph，改为独占一行的小标题
+\titleformat{\paragraph}[block]{\zihao{5}\heiti}{}{0pt}{}
+\titlespacing*{\paragraph}{0pt}{1.4ex plus .3ex minus .2ex}{0.5ex plus .1ex}
+
+% --------------------------- 图题表题 ---------------------------
+% 注意：不能在 \captionsetup 里直接写 \zihao{-5}（会报 "\zihao {-5} undefined"），
+% 必须先 \DeclareCaptionFont 定义一个字体命令。
+\DeclareCaptionFont{xiaowu}{\zihao{-5}}
+\captionsetup{font=xiaowu,labelsep=quad,justification=centering}
+
+% --------------------------- 单位格式 ---------------------------
+\sisetup{per-mode=symbol,range-phrase=--}
+
+\begin{document}
+
+% ============================= 标题块 =============================
+\begin{center}
+  {\zihao{3}\heiti 实验名称：副标题或被测物理量}\par
+  \vspace{0.8em}
+  {\zihao{5} 作者姓名}\par
+  \vspace{0.35em}
+  {\zihao{5}（化学学院，南开大学，天津 300071）}\par
+  \vspace{0.35em}
+  {\zihao{5} E-mail：someone@example.com}
+\end{center}
+
+\vspace{0.6em}
+
+% =========================== 摘要与关键词 =========================
+\noindent\textbf{摘要：}摘要用一段式，写清实验对象、方法、主要定量结果（含数值与单位）、结论与讨论要点，不出现“本文将”“众所周知”一类空话，也不写“由于条件所限”一类自我削弱句。一般在 200--300 字。\par
+\noindent\textbf{关键词：}关键词一；关键词二；关键词三；关键词四
+
+% ============================= 正文 =============================
+\section{实验目的}
+用一段或若干条说明本实验要掌握的方法、要测量的物理量与要验证的规律。避免复述实验步骤。
+
+\section{实验原理}
+\subsection{物理模型与基本关系}
+先给出物理模型，再给出可测量的关系式，并说明每个符号、单位与适用条件。示例：
+\begin{equation}
+h\nu = g\mu_B B_0,
+\qquad
+g=\frac{h\nu}{\mu_B B_0}
+\label{eq:example}
+\end{equation}
+式中 $\nu$ 为微波频率（Hz），$B_0$ 为磁感应强度（T），$\mu_B$ 为玻尔磁子，
+$h$ 为普朗克常量。由式~\eqref{eq:example} 可见 $g\propto\nu/B_0$，故频率与磁场的
+测量误差按相同权重进入结果。
+
+\subsection{工作原理框图}
+原理框图用 TikZ 手绘，不要直接截取手册图片；图中端子名与正文一致。
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm,
+  b/.style={draw,align=center,minimum height=0.65cm,minimum width=1.5cm,font=\zihao{6}},
+  >=Stealth]
+  \node[b] (s) at (0,0)   {信号源};
+  \node[b] (m) at (3.0,0) {被测样品};
+  \node[b] (d) at (6.0,0) {探测器};
+  \node[b] (r) at (9.0,0) {记录仪};
+  \draw[->] (s)--(m);
+  \draw[->] (m)--(d);
+  \draw[->] (d)--(r);
+  \node[font=\zihao{6},above] at (1.5,0.42) {\SI{468}{nm}};
+\end{tikzpicture}
+\caption{测量系统工作原理框图}
+\label{fig:block}
+\end{figure}
+
+\section{实验仪器与试剂}
+列仪器型号、关键指标与试剂，凡手册未给出的参数不臆造。需要时用三线表：
+\begin{table}[H]
+\centering
+\caption{主要仪器及其作用}
+\label{tab:devices}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{3.6cm}X}
+\toprule
+部件 & 作用\\
+\midrule
+光源 & 提供激发光或探测光，写明波长与功率。\\
+样品 & 写明浓度、溶剂、配制与保存条件。\\
+探测器 & 写明响应波段与量程。\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{实验内容与步骤}
+按任务分节（任务一、任务二……），步骤写“怎么做”与“看什么判据”，不写“认真观察”一类空话。
+软件操作写清菜单路径与参数设置，便于复现。
+
+\section{实验结果与数据处理}
+\subsection{数据与拟合}
+实测点与拟合曲线分开标注；拟合函数来自物理模型，不用目测拼凑。
+拟合参数、决定系数与残差要给出，必要时说明拟合区间。
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=.80\linewidth,height=6.4cm,
+  xlabel={自变量 $x$ /单位}, ylabel={因变量 $y$ /单位},
+  xmin=0,xmax=26,ymin=0,ymax=360,grid=both,legend pos=south east]
+\addplot[only marks,mark=*,mark size=2.4pt]
+  coordinates {(5,131)(10,224)(15,288)(20,311)(25,321)};
+\addlegendentry{实测}
+\addplot[smooth,thick,dashed]
+  coordinates {(5,131)(10,224)(15,288)(20,311)(25,321)};
+\addlegendentry{平滑连线}
+\end{axis}
+\end{tikzpicture}
+\caption{因变量随自变量的变化（虚线为平滑连接实测点的曲线）}
+\label{fig:data}
+\end{figure}
+
+\subsection{结果与讨论}
+把数值结果写进句子，并与理论预期比较；偏离要给出机制，且区分“可能导致”与“已证明”。
+
+\section{误差分析与讨论}
+按测量链逐项讨论：标定、分辨率、对准、样品制备、温度与环境、漂移、背景、读数与拟合方式。
+有重复测量或明确仪器误差时再给不确定度；没有依据时不编造误差棒。
+
+\section{思考题}
+\paragraph{（1）第一问的题目？}
+先直接回答，再给模型与实测数据的支撑。保留题目原有编号。
+
+\paragraph{（2）第二问的题目？}
+同上。
+
+\section{实验总结与展望}
+结论与数据一致，不夸大；展望只写与本实验直接相关的方向。
+
+% ============================= 参考文献 =========================
+% 只保留实际引用过的条目；用户要求删除某几条时，编号随之重排，
+% 正文角标同步改。参考文献用小五号。
+\needspace{11\baselineskip}
+\section{参考文献}
+{\zihao{-5}
+\begin{enumerate}[label={[\arabic*]},leftmargin=2.2em,itemsep=0.25em]
+\item 作者. 书名[M]. 版次. 出版地: 出版社, 年份.
+\item 作者. 篇名[J]. 刊名, 年份, 卷(期): 起止页.
+\end{enumerate}
+\par}
+
+\end{document}

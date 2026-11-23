@@ -1,0 +1,221 @@
+% !TEX program = xelatex
+% =============================================================================
+%  可复用图元片段 —— 取自本模板下已完成的四份实验报告
+%
+%  用法：复制需要的片段到正文，按注释替换坐标/标签/数据/图片路径。
+%  本文件用 report-template.tex 的导言区即可编译（照片用占位框代替）。
+%
+%  共同约定：
+%    字号   图内文字用 \zihao{6}，不要继承正文字号；
+%    线宽   结构线 0.6--0.8pt，箭头 Stealth/->，虚线 dashed/dotted 区分物理含义；
+%    标签   一律白底或放在空白处，严禁压线压框；端子名与正文措辞完全一致；
+%    图题   一律 \caption 只写一句，不在图题里写“（按××图重绘）”制作说明。
+% =============================================================================
+\documentclass[UTF8,zihao=5,a4paper]{ctexart}
+\usepackage[left=2.0cm,right=2.0cm,top=2.2cm,bottom=2.2cm]{geometry}
+\usepackage{amsmath,amssymb,bm,siunitx}
+\usepackage{graphicx,booktabs,array,tabularx}
+\usepackage{tikz,pgfplots}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\usepackage{fancyhdr,titlesec,enumitem,caption,float,indentfirst}
+\pgfplotsset{compat=1.18}
+\linespread{1.5}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0pt}
+\setCJKmainfont{SimSun}[BoldFont=SimHei,ItalicFont=KaiTi]
+\setmainfont{Times New Roman}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\zihao{-5}\itshape MODERN PHYSICS EXPERIMENT II}
+\fancyfoot[C]{\zihao{-5}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\titleformat{\section}{\zihao{-4}\heiti}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\zihao{5}\heiti}{\thesubsection}{0.8em}{}
+\DeclareCaptionFont{xiaowu}{\zihao{-5}}
+\captionsetup{font=xiaowu,labelsep=quad,justification=centering}
+\sisetup{per-mode=symbol,range-phrase=--}
+
+% 照片占位框：实际使用时删掉本定义，改为 \includegraphics
+\newcommand{\photobox}[1][3.0cm]{\fbox{\rule{0pt}{#1}\rule{1.6\dimexpr#1\relax}{0pt}}}
+
+\begin{document}
+
+\section{能级与跃迁图（吸收/弛豫/发射）}
+% 用于荧光、磷光、激光、塞曼分裂一类“能级 + 跃迁箭头”的图。
+% 要点：能带用长横线，振动能级用左侧短横线，箭头一律竖直，
+%       每个标签挂在对应箭头的 pos= 处，避免与能带重叠。
+\begin{figure}[H]\centering
+\begin{tikzpicture}[x=1cm,y=0.50cm,>=Stealth,font=\zihao{6}]
+\draw[line width=0.8pt] (0,0)--(10.9,0) node[right]{$S_0$};
+\foreach \y in {0.60,1.20}{\draw[line width=0.6pt] (0.15,\y)--(2.05,\y);}
+\draw[line width=0.8pt] (0,7.6)--(10.9,7.6) node[right]{$S_1$};
+\foreach \y in {8.20,8.80}{\draw[line width=0.6pt] (0.15,\y)--(2.05,\y);}
+\draw[line width=0.8pt,dashed] (0,3.6)--(10.9,3.6) node[right]{$T_1$};
+\draw[->,line width=1.1pt] (3.0,0.12)--(3.0,8.72)
+  node[pos=0.64,left=2pt,align=right]{吸收\\[-2pt]$h\nu_{\rm ex}$};
+\draw[->,line width=0.9pt] (4.5,8.72)--(4.5,7.70)
+  node[midway,right=2pt]{振动弛豫};
+\draw[->,line width=0.8pt] (6.2,7.52)--(6.2,3.66)
+  node[midway,right=2pt]{内转换};
+\draw[->,line width=1.1pt] (7.9,7.52)--(7.9,0.14)
+  node[pos=0.72,right=2pt,align=left]{荧光\\[-2pt]$h\nu_{\rm em}$};
+\draw[->,line width=0.8pt,dotted] (9.5,3.54)--(9.5,0.14)
+  node[pos=0.62,right=2pt]{磷光};
+\end{tikzpicture}
+\caption{分子吸收、弛豫与荧光/磷光跃迁示意图}
+\label{fig:levels}
+\end{figure}
+
+\section{测量系统方块流程图}
+% 用于“光源—样品—探测器—记录”一类链路图。
+% 要点：统一 minimum height/width，箭头只连相邻方块，端子名写在方块内。
+\begin{figure}[H]\centering
+\begin{tikzpicture}[x=1cm,y=1cm,>=Stealth,
+  b/.style={draw,align=center,minimum height=0.65cm,minimum width=1.45cm,font=\zihao{6}}]
+\node[b] (s) at (0,0)   {信号源};
+\node[b] (a) at (2.4,0) {衰减器};
+\node[b] (m) at (4.8,0) {被测样品};
+\node[b] (d) at (7.2,0) {探测器};
+\node[b] (r) at (9.6,0) {记录仪};
+\foreach \u/\v in {s/a,a/m,m/d,d/r}{\draw[->] (\u)--(\v);}
+\end{tikzpicture}
+\caption{测量系统组成框图}
+\label{fig:chain}
+\end{figure}
+
+\section{光路与偏振元件图}
+% 用于电光调制、偏振、干涉一类光路。
+% 要点：光轴用一条贯穿的水平箭头，元件画成薄片/方块压在光轴上，
+%       角度、电压、尺寸用双向箭头并在旁边标字母。
+\begin{figure}[H]\centering
+\begin{tikzpicture}[x=1cm,y=1cm,>=Stealth,
+  b/.style={draw,fill=white,align=center,minimum height=0.85cm,minimum width=1.95cm,font=\zihao{6}}]
+\draw[->,line width=0.7pt] (-1.4,0)--(11.4,0);
+\node[b] (p1) at (1.2,0)   {起偏镜 $P_1$};
+\node[b] (c)  at (5.4,0)   {电光晶体};
+\node[b] (p2) at (9.2,0)   {检偏镜 $P_2$};
+\draw[line width=1.2pt] (3.6,0.72)--(7.2,0.72);
+\draw[line width=1.2pt] (3.6,-0.72)--(7.2,-0.72);
+\draw[->,line width=0.6pt] (5.4,1.5)--(5.4,0.78)
+  node[pos=0.35,right=2pt]{$V_{\rm DC}$};
+\draw[<->,line width=0.45pt] (7.35,0.70)--(7.35,-0.70);
+\node[font=\zihao{6},anchor=west] at (7.43,0.42){$D$};
+\end{tikzpicture}
+\caption{横向电光调制结构示意}
+\label{fig:optic}
+\end{figure}
+
+\section{实测点 + 平滑连线 / 拟合曲线}
+% 用于浓度—信号、相位—输出一类“散点 + 趋势”图。
+% 要点：
+%   - 拟合函数必须来自物理模型；只连点就写“平滑连线”，不要冒称拟合；
+%   - 图例写清“实测”“拟合”以及模型名；
+%   - 拟合参数与 R^2 写进图题或正文，不要只留在图里。
+\begin{figure}[H]\centering
+\begin{tikzpicture}
+\begin{axis}[width=.80\linewidth,height=6.2cm,
+  xlabel={浓度 $c$ /(\si{\micro\gram\per\milli\litre})},
+  ylabel={峰强 /（仪器读数）},
+  xmin=0,xmax=26,ymin=0,ymax=360,grid=both,legend pos=south east]
+\addplot[only marks,mark=*,mark size=2.4pt]
+  coordinates {(5,131)(10,224)(15,288)(20,311)(25,321)};
+\addlegendentry{实测}
+\addplot[smooth,thick,dashed]
+  coordinates {(5,131)(10,224)(15,288)(20,311)(25,321)};
+\addlegendentry{平滑连线}
+\end{axis}
+\end{tikzpicture}
+\caption{信号随浓度变化的实测点与平滑连线}
+\label{fig:calib}
+\end{figure}
+% 若确实按模型拟合，用下面这种写法（cos 以“度”为单位，弧度必须换算）：
+% \addplot[domain=0:360,samples=200,thick] {1.0360*cos(x-8.02)-0.0164};
+
+\section{照片组排版（2+2+1 / 两联图）}
+% 用于同一任务的多张实验照片。
+% 要点：
+%   - 同一组照片先统一长宽比（垫白/裁剪）再并排，否则一行高一行矮；
+%   - minipage 宽度加 \hfill 排成 2 列，最后一张单独居中；
+%   - 子图编号用 (a)(b)…，图题写清每组照片记录的是同一个任务的不同工况。
+\begin{figure}[H]\centering
+\begin{minipage}[b]{.47\linewidth}\centering\photobox[3.2cm]\\[2pt]{\zihao{-5}（a）工况一}\end{minipage}\hfill
+\begin{minipage}[b]{.47\linewidth}\centering\photobox[3.2cm]\\[2pt]{\zihao{-5}（b）工况二}\end{minipage}
+
+\vspace{4pt}
+\begin{minipage}[b]{.47\linewidth}\centering\photobox[3.2cm]\\[2pt]{\zihao{-5}（c）工况三}\end{minipage}\hfill
+\begin{minipage}[b]{.47\linewidth}\centering\photobox[3.2cm]\\[2pt]{\zihao{-5}（d）工况四}\end{minipage}
+
+\vspace{4pt}
+\begin{minipage}[b]{.62\linewidth}\centering\photobox[3.2cm]\\[2pt]{\zihao{-5}（e）总览}\end{minipage}
+\caption{同一任务的五组谱图记录}
+\label{fig:grid}
+\end{figure}
+
+\section{双联装置照片}
+% 两张照片并排，底边对齐，图题里用 (a)(b) 说明。
+% 实际使用时把 \photobox 换成：
+%   \includegraphics[width=\linewidth,height=0.30\textheight,keepaspectratio]{figs/xxx.jpg}
+\begin{figure}[H]\centering
+\begin{minipage}[b]{.49\linewidth}\centering
+\photobox[4.6cm]\\[2pt]
+{\zihao{-5}（a）整套装置}
+\end{minipage}\hfill
+\begin{minipage}[b]{.49\linewidth}\centering
+\photobox[4.6cm]\\[2pt]
+{\zihao{-5}（b）局部近照}
+\end{minipage}
+\caption{实验装置实拍}
+\label{fig:photos}
+\end{figure}
+
+\section{以照片为“数据点”的坐标式图表}
+% 当一组刻度照片本身就是数据集（如“波片位置 × 偏压”），
+% 用坐标系代替普通表格：横轴为自变量，纵轴为分组，照片放在坐标点上。
+\begin{figure}[H]\centering
+\begin{tikzpicture}[x=1cm,y=1cm,every node/.style={font=\zihao{6}}]
+\draw[line width=0.7pt,-{Stealth[length=1.6mm,width=1.2mm]}] (-2.1,-1.3)--(-2.1,4.2);
+\draw[line width=0.7pt,-{Stealth[length=1.6mm,width=1.2mm]}] (-2.1,-1.3)--(12.3,-1.3);
+\foreach \x/\v in {0/0,2.86/260,5.72/520,8.58/780,11.44/1040}{
+  \draw[line width=0.5pt] (\x,-1.3)--(\x,-1.46);
+  \node[anchor=north] at (\x,-1.50){\v};
+  \draw[gray!45,densely dashed,line width=0.35pt] (\x,-1.3)--(\x,3.8);
+}
+\foreach \y/\lab in {2.78/条件 A, 0/条件 B}{
+  \draw[line width=0.5pt] (-2.1,\y)--(-2.26,\y);
+  \node[anchor=east] at (-2.34,\y){\lab};
+  \draw[gray!45,densely dashed,line width=0.35pt] (-2.1,\y)--(11.44,\y);
+}
+\foreach \x/\y in {0/2.78,2.86/2.78,5.72/2.78,8.58/2.78,11.44/2.78,
+                  0/0,2.86/0,5.72/0,8.58/0,11.44/0}{
+  \node[inner sep=0pt] at (\x,\y) {\photobox[1.9cm]};
+}
+\node[anchor=north] at (5.72,-2.0){自变量 $x$ /单位};
+\node[rotate=90,anchor=south] at (-2.86,1.4){分组};
+\end{tikzpicture}
+\caption{不同条件下的谱图记录（每个坐标点对应一张原始照片）}
+\label{fig:matrix}
+\end{figure}
+
+\section{双面板原理图}
+% 一张图里放“整体 + 局部/截面”，用两个 scope 并排，公共说明写在图题里。
+\begin{figure}[H]\centering
+\begin{tikzpicture}[x=1cm,y=1cm,every node/.style={font=\zihao{6}}]
+  \begin{scope}[shift={(0,0)}]
+    \draw[line width=0.7pt] (0,0) ellipse [x radius=1.5,y radius=1.0];
+    \draw[->] (-2.0,0)--(2.2,0) node[right]{$X_1$};
+    \draw[->] (0,-1.5)--(0,1.7) node[above]{$X_3$（光轴）};
+    \node[anchor=north] at (0,-1.8){(a) 无外场};
+  \end{scope}
+  \begin{scope}[shift={(6.4,0)}]
+    \draw[dashed,gray!65] (0,0) circle [radius=1.35];
+    \draw[line width=0.75pt,rotate=45] (0,0) ellipse [x radius=1.55,y radius=1.1];
+    \draw[->] (-2.0,0)--(2.2,0) node[right]{$X_1$};
+    \draw[->] (0,-1.5)--(0,1.7) node[above]{$X_2$};
+    \node[anchor=north] at (0,-1.8){(b) 加电场后主轴旋转};
+  \end{scope}
+\end{tikzpicture}
+\caption{主轴旋转示意（(b) 中虚线为加场前的截面，实线为加场后的截面）}
+\label{fig:panels}
+\end{figure}
+
+\end{document}

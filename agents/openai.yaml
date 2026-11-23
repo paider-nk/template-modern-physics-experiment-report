@@ -1,0 +1,7 @@
+interface:
+  display_name: "Modern Physics Experiment Report"
+  short_description: "Create or revise an evidence-based lab report"
+  icon_large: "./assets/preview.png"
+  default_prompt: "Use $artifact-template-modern-physics-experiment-report to create or revise a modern physics experiment report from my sources."
+policy:
+  allow_implicit_invocation: true
